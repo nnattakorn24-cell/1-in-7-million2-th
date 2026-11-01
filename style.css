@@ -424,4 +424,24 @@ body {
   background-image: url("./title.jpg") !important;
   opacity: 1 !important;
 }
+.bg-layer {
+  position: fixed;
+  inset: -4%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-color: #2a2019;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  animation: kenburns 26s ease-in-out infinite alternate;
+}
 
+#bg-a,
+#bg-b {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
