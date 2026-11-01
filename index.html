@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>หนึ่งในเจ็ดล้าน — ชีวิตในแผ่นดินรัชกาลที่ ๕</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- พื้นหลัง 2 ชั้นสำหรับ crossfade -->
+  <div id="bg-a" class="bg-layer"></div>
+  <div id="bg-b" class="bg-layer"></div>
+  <div id="vignette"></div>
+  <canvas id="fx"></canvas>
+
+  <!-- แถบสถานะ -->
+  <header id="hud" class="hidden">
+    <div id="stats"></div>
+    <div id="timeline">
+      <div id="timeline-track">
+        <div id="timeline-reign" title="รัชกาลที่ ๕ (๒๔๑๑–๒๔๕๓)"></div>
+        <div id="timeline-cursor">◆</div>
+      </div>
+      <div id="timeline-label"><span id="hud-year">พ.ศ. ๒๔๒๑</span><span id="hud-age">แรกเกิด</span></div>
+    </div>
+    <div id="hud-buttons">
+      <button id="btn-mute" class="icon-btn" title="ปิด/เปิดเสียง (M)">🔔</button>
+      <button id="btn-pause" class="icon-btn" title="พักเกม (Esc)">❚❚</button>
+    </div>
+  </header>
+
+  <!-- เนื้อหาหลัก -->
+  <main id="ui"></main>
+
+  <!-- การ์ดเหตุการณ์ประวัติศาสตร์ / อีเวนต์ -->
+  <div id="modal" class="hidden">
+    <div id="modal-card">
+      <div id="modal-ribbon"></div>
+      <h2 id="modal-title"></h2>
+      <div id="modal-year"></div>
+      <p id="modal-text"></p>
+      <div id="modal-effect"></div>
+      <button id="modal-ok" class="btn btn-primary">อ่านต่อ →</button>
+    </div>
+  </div>
+
+  <!-- เมนูพักเกม -->
+  <div id="pause" class="hidden">
+    <div class="paper-panel pause-panel">
+      <h2>พักสักครู่</h2>
+      <button id="pause-resume" class="btn btn-primary">เล่นต่อ</button>
+      <button id="pause-restart" class="btn">เริ่มชีวิตใหม่</button>
+      <button id="pause-title" class="btn">กลับหน้าปก</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="fader"></div>
+
+  <script src="audio.js"></script>
+  <script src="data.js"></script>
+  <script src="fx.js"></script>
+  <script src="game.js"></script>
+    
+</body>
+</html>
