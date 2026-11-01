@@ -55,8 +55,8 @@
     const a = document.getElementById("bg-a"), b = document.getElementById("bg-b");
     if (!a || !b) return;
     const showEl = bgFlip ? a : b, hideEl = bgFlip ? b : a;
-    // แก้ไขบรรทัดที่ 58 ให้เป็นแบบนี้เป๊ะ ๆ ครับ:
-    showEl.style.backgroundImage = `url("./assets/${key}.jpg")`;
+    // Fix: repository stores backgrounds at the root (e.g. title.jpg, forest.jpg, night.jpg), not in ./assets/
+    showEl.style.backgroundImage = `url("./${key}.jpg")`;
     showEl.classList.add("show"); hideEl.classList.remove("show");
     bgFlip = !bgFlip;
     if (window.FX) FX.setMode(fxMode || (key === "night" ? "firefly" : key === "village" || key === "forest" ? "petal" : "dust"));
@@ -206,18 +206,15 @@
     const childInterest = G.flags.find(f => f.startsWith("interest_"));
     if (!childInterest) return false;
     const domainKey = childInterest.replace("interest_", "");
-    
-    // ตรวจสอบ Tag ของตัวเลือกหรือ Flag ปัจจุบันว่าตรงกับสายความสนใจในวัยเด็กหรือไม่
+
     if (c.tags && c.tags.includes(domainKey)) return true;
     if (c.flag && c.flag.includes(domainKey)) return true;
-    
-    // การจับคู่เปรียบเทียบคำพ้อง
+
     if (domainKey === "freeman" && c.tags && c.tags.includes("joy")) return true;
     return false;
   }
 
   function eligibleChoices(st) {
-    // ปลดล็อกตัวเลือกให้สุ่มหรือเลือกเล่นได้อิสระ 100% โดยกรองเฉพาะเพศ
     const ok = st.choices.filter(c => {
       if (c.gender && c.gender !== G.gender) return false;
       return true;
@@ -242,7 +239,7 @@
           <div class="title-ornament">❦ ❦ ❦</div>
           <h1 class="game-title">หนึ่งในเจ็ดล้าน</h1>
           <div class="game-subtitle">ชีวิตในแผ่นดินรัชกาลที่ ๕</div>
-          <p class="title-tagline">จำลองชีวิตหนึ่งชีวิตท่ามกลางสยามยุคปฏิรูป พ.ศ. ๒๔๒๑–๒๔๙๖<br>เลือกได้อย่างอิสระทุกช่วงวัย — ทักษะในวัยเด็กจะส่งผลต่อยอดสู่อนาคต</p>
+          <p class="title-tagline">จำลองชีวิตหนึ่งชีวิตท่ามกลางสยามยุคปฏิรูป พ.ศ. ๒๔๒๑–๒๔๙๖</p>
           <div class="title-buttons">
             <button id="btn-start" class="btn btn-primary">🌅 เริ่มชะตาชีวิต</button>
             <button id="btn-gallery" class="btn">📖 คลังตอนจบ</button>
@@ -253,7 +250,7 @@
       </section>`;
     const rec = document.getElementById("title-records");
     if (records.lives > 0 && rec) {
-      rec.textContent = `เคยใช้ชีวิตแล้ว ${th(records.lives)} ชีวิต • บารมีสูงสุด ${th(records.best)} • ปลดล็อกตอนจบ ${th(records.endings.length)}/${th(D.endings.length)}`;
+      rec.textContent = `เคยใช้ชีวิตแล้ว ${th(records.lives)} ชีวิต • บารมีสูงสุด ${th(records.best)} • ปลดล็อกตอนจบ ${th(records.endings.length)}`;
     }
     document.getElementById("btn-start").onclick = () => { if (window.AudioSys) { AudioSys.unlock(); AudioSys.sfx("birth"); } setupSel.origin = null; setupSel.dream = null; setupSel.name = ""; screenSetup(0); };
     document.getElementById("btn-gallery").onclick = () => { if (window.AudioSys) { AudioSys.unlock(); AudioSys.sfx("page"); } screenGallery(); };
@@ -279,7 +276,7 @@
       ui.innerHTML = `
         <section class="screen"><div class="setup-wrap">
           <h2 class="setup-title">ความฝันและปณิธานชีวิต</h2>
-          <p class="setup-sub">เลือกเส้นทางที่เธอปรารถนา — ทางเลือกในชีวิตจะส่งเสริมตามปณิธานนี้</p>
+          <p class="setup-sub">เลือกเส้นทางที่เธอปรารถนา — ทางเลือกในชีวิตจะส่งเสริมตามความหวังของคนรุ่นนี้</p>
           ${dots}
           <div class="cards-grid">
             ${D.dreams.map(dr => `
@@ -358,8 +355,7 @@
           ribbon: "🕯️ โชคชะตาแสนสั้น (อัตราการตายทารกยุคโบราณ)",
           year: "พ.ศ. " + th(G.year),
           title: "ทารกไม่รอดชีวิต...",
-          text: `น่าเสียดายยิ่งนัก! ทารกน้อย ${G.name} ${G.deathCause} ในยุคที่หมอตำแยและยาโบราณยังเป็นที่พึ่งหลัก ทำได้เพียงทำพิธีอุทิศส่วนกุศลส่งวิญญาณสู่ภพภูมิที่ดี`
-        }, () => {
+          text: `น่าเสียดายยิ่งนัก! ทารกน้อย ${G.name} ${G.deathCause} ในยุคที่หมอตำแยและยามีจำกัด` }, () => {
           screenEnding();
         });
       });
@@ -382,7 +378,7 @@
     renderStats();
     setTimeline(st.year, `อายุ ${th(st.age)} ปี`);
     setBG(st.bg);
-    
+
     const cards = [...st.history];
     const next = () => {
       if (cards.length) { showModal(cards.shift(), next); return; }
@@ -397,7 +393,7 @@
     const choices = eligibleChoices(st);
     G._currentChoices = choices;
     const intro = idx0Intro(st, o);
-    
+
     ui.innerHTML = `
       <section id="screen-play" class="screen">
         <div class="scene-panel">
@@ -461,7 +457,6 @@
       return;
     }
 
-    // คำนวณ Synergy Bonus (+3) ย้อนหลังหากตรงกับวัยเด็ก
     let effMod = { ...c.eff };
     const isSynergy = checkChildhoodSynergy(c);
     if (isSynergy) {
@@ -485,9 +480,9 @@
 
     let customNote = "";
     if (isSynergy) {
-      customNote = ' <br><b style="color:#d97706;">✨ (ความรู้และปณิธานที่สั่งสมตั้งแต่ ๘ ขวบ ส่งผลให้เติบโตในเส้นทางนี้ได้อย่างรวดเร็ว +๓)</b>';
+      customNote = ' <br><b style="color:#d97706;">✨ (ความรู้และปณิธานที่สั่งสมตั้งแต่วัยเด็ก ส่งผลให้การตัดสินใจครั้งนี้ดีขึ้น)</b>';
     } else if (st.id === "teen") {
-      customNote = ' <br><b style="color:#2e7d4f;">💡 (แม้จะก้าวสู่เส้นทางใหม่ แต่ประสบการณ์ในวัยเด็กก็นำมาประยุกต์ใช้ได้อย่างน่าทึ่ง)</b>';
+      customNote = ' <br><b style="color:#2e7d4f;">💡 (แม้จะก้าวสู่เส้นทางใหม่ แต่ประสบการณ์วัยเด็กยังคงสะท้อนอยู่)</b>';
     }
 
     const panel = document.querySelector(".scene-panel");
@@ -511,8 +506,7 @@
         ribbon: "⚡ อนิจจังของชีวิต (ความเสี่ยงสุ่มกะทันหัน)",
         year: "พ.ศ. " + th(st.year),
         title: "ชะตาขาดกะทันหัน!",
-        text: `อนิจจา! ${G.name} ${G.deathCause} เหตุการณ์เกิดขึ้นอย่างไม่คาดฝัน ทิ้งไว้เพียงความทรงจำให้คนรุ่นหลัง`
-      }, () => {
+        text: `อนิจจา! ${G.name} ${G.deathCause} เหตุการณ์เกิดขึ้นอย่างไม่คาดฝัน ทิ้งไว้เพียงคำคร่ำครวญ` }, () => {
         screenEnding();
       });
       return;
@@ -590,7 +584,6 @@
       ? (G.deathCause || getRandomDeathCause(ageAtEnd))
       : "สิ้นอายุขัยตามธรรมชาติด้วยโรคชรายามชราภาพ";
 
-    // สรุปประวัติปณิธานในวัยเด็ก
     const childFlag = G.flags.find(f => f.startsWith("interest_"));
     const childText = childFlag 
       ? childFlag.replace("interest_scholar", "เรียนหนังสือ/วิชาการ")
@@ -626,19 +619,19 @@
           ${deathCardHtml}
 
           <div style="background:rgba(46,125,79,0.08); border:1px dashed #2e7d4f; padding:10px; border-radius:8px; margin:8px 0; text-align:center; font-size:0.9em; color:#1e5233;">
-            🌱 <b>เส้นทางชีวิตจากวัยเด็ก:</b> จากการสั่งสมความสนใจในเรื่อง <b>"${childText}"</b> ตอนอายุ ๘ ขวบ ได้กลายเป็นรากฐานสำคัญที่ส่งผลต่อชีวิตตลอดทั้ง ๔ รัชกาล
+            🌱 <b>เส้นทางชีวิตจากวัยเด็ก:</b> จากการสั่งสมความสนใจในเรื่อง <b>"${childText}"</b>
           </div>
 
           <div style="background:rgba(185,138,58,0.12); border:1px dashed #b98a3a; padding:12px; border-radius:8px; margin:12px 0; text-align:center;">
             <div style="font-size:0.9em; color:#555;">📊 สถิติชะตาชีวิตในแผ่นดิน:</div>
             <div style="font-size:1.1em; font-weight:bold; color:#2c1d11;">
-              คุณคือกลุ่มประชากร <span style="color:#b34747; font-size:1.2em;">Top ${rankInfo.percentile}%</span> ของประชากรสยาม ๗ ล้านคน
+              คุณคือกลุ่มประชากร <span style="color:#b34747; font-size:1.2em;">Top ${rankInfo.percentile}%</span> ของประชากรสยาม
             </div>
             <div style="font-size:0.85em; color:#666; margin-top:2px;">(ประมาณอันดับที่ ${th(rankInfo.approxPeople)} จาก ๗,๐๐๐,๐๐๐ ชีวิต)</div>
           </div>
 
           <div class="ending-dream ${dreamOK ? "ok" : dreamMid ? "mid" : "no"}">
-            ${dream ? `${dream.ico} ความฝัน “${dream.name}” — ${dreamOK ? "บรรลุเป้าหมายสูงสุด!" : dreamMid ? "ประสบความสำเร็จตามสมควร" : "ฝันไม่สำเร็จ แต่ชีวิตยังมีค่า"}` : ""}
+            ${dream ? `${dream.ico} ความฝัน “${dream.name}” — ${dreamOK ? "บรรลุเป้าหมายสูงสุด!" : dreamMid ? "ประสบความสำเร็จระดับกลาง" : "ยังไม่บรรลุเป้าหมาย"}` : "💭 ไม่มีความฝันที่ชัดเจน"}
           </div>
           <div class="ending-story">${esc(story)}</div>
           <div class="ending-stats">
@@ -679,7 +672,7 @@
               return `<div class="g-card ${got ? "" : "locked"}">
                 <div class="g-ico">${got ? e.ico : "❔"}</div>
                 <h4>${got ? e.title : "ยังไม่เคยพบ"}</h4>
-                <p>${got ? "เคยใช้ชีวิตถึงตอนจบนี้แล้ว" : "ใช้ชีวิตให้ถึงเส้นทางนี้เพื่อปลดล็อก"}</p>
+                <p>${got ? "เคยใช้ชีวิตถึงตอนจบนี้แล้ว" : "ใช้ชีวิตให้ถึงเส้นทางนี้เพื่อเปิดเผย"}</p>
               </div>`;
             }).join("")}
           </div>
