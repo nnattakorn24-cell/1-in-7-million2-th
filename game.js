@@ -55,7 +55,7 @@
     const a = document.getElementById("bg-a"), b = document.getElementById("bg-b");
     if (!a || !b) return;
     const showEl = bgFlip ? a : b, hideEl = bgFlip ? b : a;
-    showEl.style.backgroundImage = `url("${key}.jpg")`;
+    showEl.style.backgroundImage = `url(".${key}.jpg")`;
     showEl.classList.add("show"); hideEl.classList.remove("show");
     bgFlip = !bgFlip;
     if (window.FX) FX.setMode(fxMode || (key === "night" ? "firefly" : key === "village" || key === "forest" ? "petal" : "dust"));
