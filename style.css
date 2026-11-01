@@ -419,3 +419,9 @@ body {
   .paper-panel { padding: 20px 18px; }
   #screen-play { padding-bottom: 16px; }
 }
+/* บังคับให้โหลดภาพฉากแรกสุด (หน้าปก) ขึ้นมาทันที ป้องกันระบบ JS ลิงก์เสียบน GitHub */
+#bg-a {
+  background-image: url("./title.jpg") !important;
+  opacity: 1 !important;
+}
+
